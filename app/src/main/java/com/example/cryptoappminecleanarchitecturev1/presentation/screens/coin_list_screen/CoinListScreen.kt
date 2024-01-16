@@ -1,0 +1,71 @@
+package com.example.cryptoappminecleanarchitecturev1.presentation.screens.coin_list_screen
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.cryptoappminecleanarchitecturev1.data.local.models.transientModels.Coin
+import com.example.cryptoappminecleanarchitecturev1.presentation.screens.coin_list_screen.components.CoinListItem
+
+
+@Composable
+fun CoinListScreen(
+    viewModel: CoinListViewModel = hiltViewModel(),
+    onItemClick: (Coin) -> Unit = {},
+
+) {
+
+        val state = viewModel.state.collectAsState().value
+
+        println("CoinDssssS: state = $state")
+
+        Box(modifier = Modifier.fillMaxSize()){
+               LazyColumn(modifier = Modifier.fillMaxSize()){
+                       items(state.coins){coin ->
+                            CoinListItem(
+                                coin = coin,
+                                onItemClick = {onItemClick(coin)}
+                            )
+                       }
+               }
+
+            if(state.error.isNotBlank()){
+                Text(
+                    text = state.error,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .align(Alignment.Center)
+                )
+            }
+
+            if(state.isLoading == true){
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+
+
+        }
+
+
+
+
+
+
+
+}
